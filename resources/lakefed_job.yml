@@ -19,7 +19,7 @@ resources:
             task:
               task_key: run_query
               notebook_task:
-                notebook_path: ../notebooks/run_query.sql
+                notebook_path: ../notebooks/run_query.ipynb
                 base_parameters:
                   task_id: "{{input}}"
                 source: WORKSPACE
