@@ -4,4 +4,5 @@
 select id
 from identifier(:ctrl_catalog || '.' || :ctrl_schema || '.' || :ctrl_table)
 where task_collection = :task_collection
+and load_partitioned = :load_partitioned
 and task_enabled is true
