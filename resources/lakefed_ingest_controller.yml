@@ -22,6 +22,27 @@ resources:
                 job_id: ${resources.jobs.lakefed_ingest_copy.id}
                 job_parameters:
                   task_id: "{{input.id}}"
+        - task_key: get_copy_partitioned_tasks
+          depends_on:
+            - task_key: foreach_copy_task
+          sql_task:
+            parameters:
+              load_partitioned: "true"
+            file:
+              path: ../src/lakefed_ingest/get_task_ids.sql
+              source: WORKSPACE
+            warehouse_id: ${var.warehouse_id}
+        - task_key: foreach_copy_partitioned_task
+          depends_on:
+            - task_key: get_copy_partitioned_tasks
+          for_each_task:
+            inputs: "{{tasks.get_copy_partitioned_tasks.output.rows}}"
+            task:
+              task_key: run_copy_partitioned_job
+              run_job_task:
+                job_id: ${resources.jobs.lakefed_ingest_copy_partitioned.id}
+                job_parameters:
+                  task_id: "{{input.id}}"
       tags:
         workload: lakefed_ingest
       queue:
