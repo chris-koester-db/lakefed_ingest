@@ -155,12 +155,12 @@ and table_type = 'BASE TABLE';
 2. JDBC pushdown - create a config file like [config/postgresql_jdbc.json](config/postgresql_jdbc.json). Use the path to the file as the value for the `jdbc_config_file` job parameter. [Secrets](https://docs.databricks.com/aws/en/security/secrets/) must be used for JDBC credentials. See [notebooks/manage_secrets.ipynb](notebooks/manage_secrets.ipynb) for reference.
 
 ### 3. Run Controller Job
-1. Run the lakefed_ingest_controller job and specify the desired task_collection.
+1. Run the lakefed_ingest_controller job, providing the desired task_collection as a parameter.
 2. The lakefed_ingest_controller job will run all non-partitioned tasks, followed by all partitioned tasks. Non-partitioned tasks run concurrently, and partitioned tasks run sequentially. This is because partitioned tasks will spawn concurrent queries, and we want to maintain a consistent level of concurrency at the controller job (And source system) scope.
 
 ### Recommendations
 - Use a partition column with a relatively even distribution. If the partition column is also used in an index, that is even better.
-- Number of cores in the Databricks job should match or exceed the concurrency of the foreach task.
+- Use a small all-purpose cluster if you have partitioned ingestion tasks. This cluster is used only for configuring partitions (Not heavy data processing), and we don't want to wait for a job cluster to spin up for each partitioned ingestion task.
 
 ### Limitations
 - Does not handle skew. The solution works best when the partition column has an even distribution.
@@ -176,7 +176,7 @@ Note: Since "dev" is specified as the default target in databricks.yml, you can 
 
 This deploys everything that's defined for this project, including:
 - Three jobs prefixed with `lakefed_ingest_`
-- main.py module for the partitioned copy job
+- main.py module for the partitioned ingest job
 - All associated resources
 
 You can find the deployed job by opening your workspace and clicking on **Workflows**.
