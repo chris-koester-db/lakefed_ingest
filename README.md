@@ -3,7 +3,9 @@
 Metadata-driven framework for ingesting data into Databricks using [Lakehouse Federation](https://docs.databricks.com/en/query-federation/index.html). Supports the following ingestion patterns:
 - **Full**: ingests entire table
 - **Incremental**: ingests incrementally using watermarks
-- **Partitioned**: spreads ingestion across many small queries, run N at a time. Used for large tables.
+- **Partitioned**: spreads ingestion across many small queries, run N at a time. Used for large tables. See diagram below.
+
+![Lakehouse Federation ingest diagram](assets/lakefed_ingest_diagram.png "Lakehouse Federation ingest diagram")
 
 The following sources are currently supported:
 - SQL Server
